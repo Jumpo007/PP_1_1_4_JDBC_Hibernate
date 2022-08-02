@@ -20,22 +20,24 @@ public class Util {
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             try {
-                Configuration cfg = new Configuration();
-                Properties properties = new Properties();
-                properties.put(Environment.DRIVER, DRIVER);
-                properties.put(Environment.URL, URL);
-                properties.put(Environment.USER, USERNAME);
-                properties.put(Environment.PASS, PASSWORD);
-                properties.put(Environment.SHOW_SQL, "true");
-                properties.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
+                Configuration configuration = new Configuration();
 
-                cfg.setProperties(properties);
-                cfg.addAnnotatedClass(User.class);
+                Properties settings = new Properties();
+                settings.put(Environment.DRIVER, DRIVER);
+                settings.put(Environment.URL, URL);
+                settings.put(Environment.USER, USERNAME);
+                settings.put(Environment.PASS, PASSWORD);
+                settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
+                settings.put(Environment.SHOW_SQL, "true");
+                settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
 
-                ServiceRegistry registry = new StandardServiceRegistryBuilder()
-                        .applySettings(cfg.getProperties()).build();
-                sessionFactory = cfg.buildSessionFactory(registry);
+                configuration.setProperties(settings);
+                configuration.addAnnotatedClass(User.class);
 
+                ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                        .applySettings(configuration.getProperties()).build();
+
+                sessionFactory = configuration.buildSessionFactory(serviceRegistry);
             } catch (Exception e) {
                 e.printStackTrace();
             }
